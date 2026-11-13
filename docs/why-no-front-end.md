@@ -1,24 +1,27 @@
 # Why there is no front end
 
-ftrack Studio is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+ftrack Studio is a production database with a subscription per user. Underneath it are ordinary records: shows, shots, assets, tasks, time, versions, notes. The subscription pays for the screens on top, so producers and coordinators who do not write queries can get at those records.
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+A producer's real questions are rarely on the screens anyway. Which shots are over bid with no change order? How far are we from the rebate threshold? Which client notes are a week old? Here you ask in plain words and Claude Code runs the query.
 
 ## What you gain
 
-- **Better answers.** A dashboard shows what the vendor decided to chart. Here you ask your own question, in your own words, and get it answered against your own data.
-- **No seats.** Everyone who needs to look can look. The bill does not grow with headcount.
-- **Your data in your Postgres.** Plain tables. Back them up, query them from anything, leave any time. There is no export step because there is nothing to leave.
-- **A process that matches you.** When your way of working changes, you add a command. You do not wait for a feature request to clear.
+- **Answers the dashboard does not chart.** Bid against actual by department, rebate spend counted the way the scheme counts it, client notes by age.
+- **No seats.** Coordinators, supervisors and the production accountant can all ask. The bill does not grow with the crew.
+- **Your records in your own Postgres.** Back them up, query them from your pipeline tools, leave any time.
+- **Your pipeline, your rules.** Step names, statuses and review rules change with one command, not a feature request.
 
-## What you give up
+## What a screen gives that this does not
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
+Be clear-eyed about this before you switch:
+
+- **Media review.** ftrack plays versions, draws on frames and syncs review sessions. This system records versions and notes; it does not play media. Keep your review player (RV, cineSync, or whatever your studio uses) and record the decision here, or have Enterprise DNA connect one.
+- **Artists clicking on their own tasks.** Artists usually live in their DCC and a task list. Here the coordinator or a pipeline hook logs time and versions. A small artist page is a common customisation.
+- **DCC integrations.** ftrack's connectors publish from Nuke, Maya and Houdini. A pipeline TD can call this CLI or write to the database the same way; it is not wired out of the box.
 - **A phone app.** It runs where Claude Code runs.
-- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep ftrack Studio. If you need the answers more than the screens, this is cheaper, faster and yours.
+Studios where the producers and supervisors drive the schedule and the money, and the review player is already separate. If your artists need a full tracking interface all day, keep it, or ask Enterprise DNA to build the screens you need on top of this database.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/ftrack

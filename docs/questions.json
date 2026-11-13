@@ -1,0 +1,12 @@
+[
+  "Which shots have used more days than we bid, and does a change order cover the difference?",
+  "Which department's bids run light across every show we have delivered?",
+  "How far is each show from the PDV Offset or NZ rebate threshold, counting only in-country time at day rates and evidenced invoices?",
+  "Has every NZ show registered for the rebate within 20 working days of the bid being accepted?",
+  "Which vendor costs are missing the invoice reference we need for the rebate claim?",
+  "Which client notes are more than five days old and still not addressed?",
+  "Which versions have sat with the client longer than five days with no answer?",
+  "Which artists have more bid days left on tasks due this fortnight than working days to do them?",
+  "Which shots are due in the next ten days with no approved version?",
+  "Which shots are approved but past their due date with no delivery recorded?"
+]

@@ -2,13 +2,37 @@
   {
     "name": "week",
     "title": "This week",
-    "subtitle": "Shot Tracking for Claude Code: what needs attention, rendered by npm run view",
+    "subtitle": "Shot Tracking for Claude Code: what needs a producer's attention",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Shots due in the next ten days", "note": "Anything without an approved version is at risk.", "sql": "select sp.show, sp.shot, sp.status, sp.due_on, sp.due_on - current_date as days_left, sp.latest_version from shot_progress sp where sp.status not in ('delivered','omitted') and sp.due_on <= current_date + 10 order by sp.due_on" },
+      { "title": "Versions waiting on a review", "sql": "select v.ref, v.status, v.submitted_on, case when v.status = 'pending_client' then current_date - v.sent_to_client_on else current_date - v.submitted_on end as waiting_days from versions v where v.status in ('pending_internal','pending_client') order by waiting_days desc" },
+      { "title": "Client notes not addressed", "sql": "select coalesce(sh.ref, a.ref) as shot, n.noted_on, current_date - n.noted_on as age_days, n.body from notes n left join shots sh on sh.id = n.shot_id left join assets a on a.id = n.asset_id where n.from_client and n.addressed_on is null order by n.noted_on" },
+      { "title": "Change orders undecided", "sql": "select co.ref, sh.ref as shot, co.description, co.days, co.status, current_date - co.raised_on as age_days from change_orders co left join shots sh on sh.id = co.shot_id where co.status in ('raised','sent') order by co.raised_on" }
+    ]
+  },
+  {
+    "name": "shot-board",
+    "title": "Shot board",
+    "subtitle": "Every shot, its status, bid and actual days",
+    "sections": [
+      { "title": "All shots", "sql": "select show, shot, sequence, status, due_on, bid_days, actual_days, pct_of_bid, latest_version from shot_progress order by show, shot" }
+    ]
+  },
+  {
+    "name": "bid-vs-actual",
+    "title": "Bid against actual",
+    "subtitle": "Where the bid was wrong, by shot and by department step",
+    "sections": [
+      { "title": "Shots over bid", "sql": "select show, shot, status, bid_days, actual_days, pct_of_bid from shot_progress where bid_days > 0 and actual_days > bid_days order by pct_of_bid desc" },
+      { "title": "By step", "sql": "select step, count(*) as tasks, sum(bid_days) as bid_days, sum(actual_days) as actual_days, round(100 * sum(actual_days) / nullif(sum(bid_days), 0)) as pct_of_bid from task_actuals group by step order by pct_of_bid desc nulls last" }
+    ]
+  },
+  {
+    "name": "rebate",
+    "title": "Rebate spend",
+    "subtitle": "Qualifying spend against each scheme's threshold",
+    "sections": [
+      { "title": "By show", "note": "Labour is logged time at each person's day rate where the work was done in the scheme's country. Vendor spend counts only with an evidence reference.", "sql": "select show, scheme, qualifying_cents, threshold_cents, gap_cents, rebate_estimate_cents, outside_country_cents, no_evidence_cents, currency from rebate_spend order by show" }
     ]
   }
 ]

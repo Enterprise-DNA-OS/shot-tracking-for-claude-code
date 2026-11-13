@@ -1,11 +1,11 @@
 ---
-description: Check the records against the rules this industry lives under (the ones listed in docs/compliance.md) and report what is missing, late, or about to breach, with the rule cited.
+description: Check every rebate show against the scheme rules in docs/compliance.md and report what is breached, due or short, with the rule cited.
 ---
 
-1. Read `docs/compliance.md`. Each rule has a name, the source it comes from, what a breach looks like in the data, and the SQL or command that finds it.
-2. Run each check. Use the CLI's `--json` output or a direct query through `scripts/lib/db.mjs`.
-3. Report as a table: rule, count, the worst example (name and days), the source. Order by severity: breached first, then due within 7 days, then clean.
-4. For anything breached, draft the fix the operator can approve: the record to update, the notice to send (draft to `drafts/`, never send), or the task to add.
-5. If a rule in `docs/compliance.md` is out of date, say so and stop. Do not guess at law. The operator confirms the rule, then you update the doc and the check together.
+1. Read `docs/compliance.md`. Each rule has its source, what a breach looks like in the records, and the check that finds it.
+2. Run `node scripts/shots.mjs compliance --json`. States: breach, due (within five working days), check (a date is missing), watch (below threshold), info, ok.
+3. Report as a table: rule, show, state, detail, source. Breaches first.
+4. For each breach, propose the fix the operator approves: record the registration date (`set show <ref> --registered=YYYY-MM-DD`), add the missing invoice reference (`set spend <ref> --evidence=...`), add a day rate, or draft a note to the production accountant in `drafts/`. Never send anything.
+5. If a rule in `docs/compliance.md` looks out of date, say so and stop. Do not guess at scheme rules. The operator confirms the current rule with the agency, then you update the doc, the `rebate_schemes` row and the check together in a new migration.
 
-Nothing here is legal advice. The doc records the rules the operator has told the system to enforce, with sources, and this command checks the data against them.
+Nothing here is tax or legal advice. The checks show the records against the rules the studio has told the system to watch, with sources, so the producer and the accountant see problems early.

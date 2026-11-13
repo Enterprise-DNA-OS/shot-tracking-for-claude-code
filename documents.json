@@ -1,11 +1,36 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "client-status-report",
+    "title": "Client status report",
+    "for_each": "select s.id, s.ref || ' ' || s.name as name from shows s where s.status in ('awarded','in_progress')",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Show", "layout": "record", "sql": "select s.name as show, c.name as client, s.status, s.delivery_due from shows s join clients c on c.id = s.client_id where s.id = $1" },
+      { "title": "Shots", "sql": "select shot, status, due_on, latest_version from shot_progress where show_id = $1 order by shot" },
+      { "title": "Waiting on your review", "sql": "select v.ref as version, v.sent_to_client_on as sent, current_date - v.sent_to_client_on as days_waiting from versions v join tasks t on t.id = v.task_id where t.show_id = $1 and v.status = 'pending_client' order by v.sent_to_client_on" },
+      { "title": "Your notes in progress", "sql": "select coalesce(sh.ref, a.ref) as shot, n.noted_on, n.body from notes n left join shots sh on sh.id = n.shot_id left join assets a on a.id = n.asset_id where coalesce(sh.show_id, a.show_id) = $1 and n.from_client and n.addressed_on is null order by n.noted_on" },
+      { "title": "Change orders", "sql": "select co.ref, sh.ref as shot, co.description, co.days, co.amount_cents, s.currency, co.status from change_orders co join shows s on s.id = co.show_id left join shots sh on sh.id = co.shot_id where co.show_id = $1 order by co.raised_on" }
+    ]
+  },
+  {
+    "name": "rebate-spend-schedule",
+    "title": "Rebate spend schedule",
+    "for_each": "select s.id, s.ref || ' ' || s.name as name from shows s where s.rebate_scheme is not null",
+    "file": "name",
+    "sections": [
+      { "title": "Summary", "layout": "record", "sql": "select scheme, currency, qualifying_cents, threshold_cents, gap_cents, rebate_estimate_cents from rebate_spend where show_id = $1" },
+      { "title": "In-country artist time", "note": "Logged hours at each person's day rate. A working day is the working_day_minutes setting.", "sql": "select p.name, p.department, l.location, round(sum(l.minutes) / 60.0, 1) as hours, round(sum(l.minutes)::numeric / (select value from settings where key = 'working_day_minutes') * p.day_rate_cents)::bigint as cost_cents, sh.currency from time_logs l join tasks t on t.id = l.task_id join people p on p.id = l.person_id join shows sh on sh.id = t.show_id join rebate_schemes r on r.code = sh.rebate_scheme where t.show_id = $1 and l.location = r.country group by p.id, l.location, sh.currency order by p.name" },
+      { "title": "Vendor spend", "sql": "select v.vendor, v.description, v.incurred_on, v.location, v.amount_cents, s.currency, case when v.evidence_ref = '' then 'MISSING' else v.evidence_ref end as evidence from vendor_spend v join shows s on s.id = v.show_id where v.show_id = $1 order by v.incurred_on" },
+      { "title": "Work outside the country (does not count)", "sql": "select p.name, l.location, round(sum(l.minutes) / 60.0, 1) as hours from time_logs l join tasks t on t.id = l.task_id join people p on p.id = l.person_id join shows sh on sh.id = t.show_id join rebate_schemes r on r.code = sh.rebate_scheme where t.show_id = $1 and l.location <> r.country group by p.name, l.location order by p.name" }
+    ]
+  },
+  {
+    "name": "change-order",
+    "title": "Change order",
+    "for_each": "select co.id, co.ref as name from change_orders co",
+    "file": "name",
+    "sections": [
+      { "title": "Change", "layout": "record", "sql": "select co.ref, s.name as show, sh.ref as shot, sh.description as shot_description, co.description as change, co.days as extra_days, co.amount_cents, s.currency, co.status, co.raised_on from change_orders co join shows s on s.id = co.show_id left join shots sh on sh.id = co.shot_id where co.id = $1" }
     ]
   }
 ]

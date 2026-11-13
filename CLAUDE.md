@@ -22,9 +22,45 @@ Fill this in once. A worker with context knows. A worker without it guesses.
 
 | When the operator asks for... | Use this |
 |---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+| What needs me today? | `/attention` |
+| What is up for review? | `/dailies` |
+| How are the shows going? | `/shows` |
+| Where is a shot or sequence? | `/shots` |
+| Where is an asset build? | `/assets` |
+| What is on an artist's list? | `/tasks` |
+| Who is on the team? | `/people` |
+| Show me one record | `/card` |
+| Add a show, shot, task, person or cost | `/add` |
+| Change a date, bid, status or assignee | `/update` |
+| Log time | `/log` |
+| A new version is up | `/submit` |
+| Record a review decision | `/review` |
+| Add a note | `/note` |
+| Which client notes are open? | `/client-notes` |
+| What is over bid? | `/over-bid` |
+| Who is overbooked or free? | `/artist-load` |
+| What is due for delivery? | `/deliveries` |
+| Raise or decide a change order | `/change-orders` |
+| Where are we on the rebate? | `/rebate` |
+| Are we compliant? | `/compliance` |
+| Monday review | `/weekly-review` |
+| Save the Monday review | `/draft-weekly-review` |
+| Write the client a status note | `/draft-client-update` |
+| Write a change order note | `/draft-change-order` |
+| Bring data across from ftrack | `/import` |
+| Export everything | `/export` |
+| What changed? | `/audit` |
+| Change a field, step, status or rule | `/customise` |
+| Add a dashboard page | `/new-view` |
 
 If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+
+## House rules for a studio
+
+- Day rates and rebate figures are private. Show them only when the operator asks about cost or the rebate.
+- Where an artist worked decides whether the time counts for a rebate. Ask when it is not the person's usual location.
+- A shot is approved only when every task on it is done. A shot is delivered only when it is approved.
+- Client notes go in with the client's words as written.
 
 ## Hard rules
 
