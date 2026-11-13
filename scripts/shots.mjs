@@ -472,7 +472,7 @@ const TABLES = ['clients', 'shows', 'people', 'shots', 'assets', 'tasks', 'time_
 const csvCell = (v) => { const s = v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v); return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 
 async function exportAll(db, opt) {
-  const dir = path.resolve(opt.out || path.join(process.env.OUTPUT_DIR || REPO_ROOT, 'export'));
+  const dir = path.resolve(opt.out || path.join(process.env.OUTPUT_DIR || REPO_ROOT, 'exports', new Date().toISOString().slice(0, 10)));
   fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
   const snap = { exported_at: new Date().toISOString(), tables: {} };
   const counts = {};
